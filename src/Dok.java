@@ -11,7 +11,6 @@ public class Dok implements Runnable{
 	}
 
 	private synchronized void work() {
-		ready.setReady(false);
 		for(String str : ship.getBoxes()) {
 			System.out.println(ship.getName() + ": " + str);
 			try {

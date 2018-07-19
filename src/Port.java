@@ -18,21 +18,33 @@ public class Port implements Runnable{
 	public void run() {
 		isDocReady right = new isDocReady();
 		isDocReady left = new isDocReady();
+		Thread rightDocThread = null;
+		Thread leftDocThread = null;
 		if(port.isEmpty()) {
 			return;
 		}
 		while(!port.isEmpty()) {
 		if(right.isReady()) {
 			Dok rightDok = new Dok(port.remove(), right);
-			Thread thr = new Thread(rightDok);
-			thr.start();
+			rightDocThread = new Thread(rightDok);
+			rightDocThread.start();
+			right.setReady(false);
 		}
 		if(left.isReady() && !port.isEmpty()) {
 			Dok leftDok = new Dok(port.remove(), left);
-			Thread thr = new Thread(leftDok);
-			thr.start();
+			leftDocThread = new Thread(leftDok);
+			leftDocThread.start();
+			left.setReady(false);
 		}
-		System.out.println(right.isReady());
+		try {
+			rightDocThread.join();
+			leftDocThread.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		right.setReady(true);
+		left.setReady(true);
 		}
 	}
 
